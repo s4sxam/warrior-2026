@@ -1,26 +1,36 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Discipline 2026 | Warrior Mode</title>
+    <title>Discipline 2026 | Warrior Mode v4</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { --warrior-red: #ff3131; --bg-black: #050505; --glass: rgba(255, 255, 255, 0.05); }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-black); color: white; margin: 0; padding: 20px; text-align: center; -webkit-tap-highlight-color: transparent; }
         
-        /* Shame Mode UI (The Harsh Warning) */
+        /* Shame Mode UI */
         #shame-mode { 
             display: none; background: #ff0000; color: black; position: fixed; 
             top:0; left:0; width:100%; height:100%; z-index: 9999; 
             justify-content: center; align-items: center; flex-direction: column; 
             padding: 25px; box-sizing: border-box; text-align: center;
         }
-        #shame-mode h1 { font-size: 45px; font-weight: 900; margin: 0; }
-        #shame-mode p { font-size: 22px; font-weight: 800; margin-top: 20px; line-height: 1.4; }
+
+        /* Modal Pop-up Style */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #111; padding: 30px; border-radius: 20px; border: 1px solid var(--warrior-red); 
+            width: 85%; max-width: 400px;
+        }
+        .modal-content input {
+            width: 100%; padding: 12px; margin: 20px 0; background: #222; border: 1px solid #444; 
+            color: white; text-align: center; font-size: 20px; border-radius: 10px;
+        }
 
         .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
         .title { font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #ff3131, #8b0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
@@ -28,41 +38,39 @@
         .streak-num { font-size: 50px; font-weight: 900; color: var(--warrior-red); text-shadow: 0 0 20px rgba(255, 49, 49, 0.5); margin: 10px 0; }
         .label { font-size: 10px; color: #666; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; }
 
-        .panic-btn { background: var(--warrior-red); color: white; width: 100%; padding: 16px; border-radius: 50px; font-weight: 900; margin-bottom: 20px; border: none; box-shadow: 0 5px 15px rgba(255,49,49,0.4); cursor: pointer; }
+        .panic-btn { background: var(--warrior-red); color: white; width: 100%; padding: 16px; border-radius: 50px; font-weight: 900; margin-bottom: 20px; border: none; cursor: pointer; }
         
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .action-btn { border: none; padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; transition: 0.3s; font-size: 13px; }
+        .action-btn { border: none; padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 13px; }
         .victory { background: #1DB954; color: black; }
         .relapse { background: #222; color: #ff3131; border: 1px solid #ff3131; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 15px; }
         .day-box { height: 35px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #444; }
-        .day-box.clean { background: #1DB954; color: black; box-shadow: 0 0 10px #1db954; border: none; }
-        .day-box.failed { background: var(--warrior-red); color: white; box-shadow: 0 0 10px #ff3131; border: none; }
+        .day-box.clean { background: #1DB954; color: black; box-shadow: 0 0 10px #1db954; }
+        .day-box.failed { background: var(--warrior-red); color: white; box-shadow: 0 0 10px #ff3131; position: relative; }
+        .day-box.failed::after { content: attr(data-count); position: absolute; top: -5px; right: -5px; background: white; color: black; font-size: 8px; padding: 2px 5px; border-radius: 50%; }
 
-        #wrapped-report { display: none; background: white; color: black; padding: 25px; border-radius: 25px; margin-top: 20px; animation: slideUp 0.6s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* The Watermark Update (Bright White) */
-        .footer { 
-            text-align: center; 
-            font-size: 11px; 
-            color: #ffffff; /* pure white */
-            letter-spacing: 6px; 
-            margin-top: 50px; 
-            font-weight: 900; 
-            text-transform: uppercase;
-            opacity: 1;
-        }
+        #wrapped-report { display: none; background: white; color: black; padding: 25px; border-radius: 25px; margin-top: 20px; }
+        .footer { text-align: center; font-size: 11px; color: #ffffff; letter-spacing: 6px; margin-top: 50px; font-weight: 900; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-<!-- SHAME MODE OVERLAY -->
+<!-- FAIL MODAL -->
+<div id="failModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color: var(--warrior-red); margin:0;">DISCIPLINE BROKEN</h2>
+        <p style="color: #888;">Be honest. How many times today?</p>
+        <input type="number" id="relapseCount" value="1" min="1">
+        <button class="action-btn victory" style="width:100%" onclick="submitFailure()">SUBMIT REPORT</button>
+    </div>
+</div>
+
 <div id="shame-mode">
     <h1>MISSION FAILED</h1>
-    <p>"You will never be a man. GO to hell nigga."</p>
-    <button onclick="location.reload()" style="margin-top:30px; padding:12px 25px; background:black; color:white; border:none; border-radius:12px; font-weight:bold;">TRY TO REDEEM YOURSELF</button>
+    <p>"You will never be a man. Go back and be a failure."</p>
+    <button onclick="location.reload()" style="margin-top:30px; padding:12px 25px; background:black; color:white; border:none; border-radius:12px; font-weight:bold;">REDEEM YOURSELF</button>
 </div>
 
 <div id="main-content">
@@ -72,17 +80,16 @@
     </div>
 
     <div class="glass-card">
-        <div class="label">Clean Streak</div>
+        <div class="label">Current Streak</div>
         <div id="streak-display" class="streak-num">0</div>
         <div class="label">Days Finished</div>
     </div>
 
-    <button class="panic-btn" onclick="emergency()"><i class="fas fa-skull"></i> PANIC BUTTON: I Want to Masturbated </button>
+    <button class="panic-btn" onclick="emergency()"><i class="fas fa-skull"></i> PANIC BUTTON </button>
 
     <div class="btn-group">
-        <button class="action-btn victory" onclick="logProgress(true)">I Stay Clean
-      </button>
-        <button class="action-btn relapse" onclick="logProgress(false)">I Failed </button>
+        <button class="action-btn victory" onclick="logProgress(true)">I STAY CLEAN</button>
+        <button class="action-btn relapse" onclick="logProgress(false)">I FAILED</button>
     </div>
 
     <div class="glass-card">
@@ -94,7 +101,7 @@
     <div id="wrapped-report">
         <h3 style="margin:0; font-size: 14px; color: #888;">MONTHLY PERFORMANCE</h3>
         <h1 id="month-name" style="margin: 5px 0;">JANUARY</h1>
-        <div style="font-size: 22px; font-weight: 900;" id="final-stats"></div>
+        <div style="font-size: 18px; font-weight: 900;" id="final-stats"></div>
         <p id="rank" style="color: var(--warrior-red); font-weight: 900; margin-top: 10px;"></p>
     </div>
 
@@ -103,39 +110,44 @@
 
 <script>
     function emergency() {
-        const warriorTips = [
-            "DO 50 PUSHUPS RIGHT NOW! NO EXCUSES!",
-            "WASH YOUR FACE WITH ICE COLD WATER!",
-            "LEAVE THE ROOM IMMEDIATELY! GO FOR A WALK!",
-            "THINK ABOUT YOUR FUTURE SELF. DON'T BE A LOSER!"
-        ];
-        alert("🔥 WARRIOR MODE: " + warriorTips[Math.floor(Math.random()*warriorTips.length)]);
+        const tips = ["DO 50 PUSHUPS!", "ICE COLD WATER ON FACE!", "LEAVE THE ROOM!", "THINK OF YOUR GOALS!"];
+        alert("🔥 WARRIOR: " + tips[Math.floor(Math.random()*tips.length)]);
     }
 
     function logProgress(isClean) {
         const today = new Date().toDateString();
-        let history = JSON.parse(localStorage.getItem('warrior_history_v3') || "{}");
+        let history = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
         
         if(history[today]) {
-            alert("Today's battle is already recorded!");
+            alert("Today's record already exists!");
             return;
         }
 
-        history[today] = isClean ? 'clean' : 'failed';
-        localStorage.setItem('warrior_history_v3', JSON.stringify(history));
-
         if(isClean) {
+            history[today] = { status: 'clean', count: 0 };
+            localStorage.setItem('warrior_history_v4', JSON.stringify(history));
             let s = parseInt(localStorage.getItem('warrior_streak_v3') || 0) + 1;
             localStorage.setItem('warrior_streak_v3', s);
             confetti({ particleCount: 200, spread: 80, colors: ['#ff3131', '#ffffff'] });
+            setTimeout(() => location.reload(), 1500);
         } else {
-            localStorage.setItem('warrior_streak_v3', 0);
+            document.getElementById('failModal').style.display = 'flex';
         }
+    }
+
+    function submitFailure() {
+        const count = document.getElementById('relapseCount').value || 1;
+        const today = new Date().toDateString();
+        let history = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
+        
+        history[today] = { status: 'failed', count: parseInt(count) };
+        localStorage.setItem('warrior_history_v4', JSON.stringify(history));
+        localStorage.setItem('warrior_streak_v3', 0);
         location.reload();
     }
 
     function render() {
-        const history = JSON.parse(localStorage.getItem('warrior_history_v3') || "{}");
+        const history = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
         const today = new Date();
         const currentMonth = today.getMonth();
         const currentYear = today.getFullYear();
@@ -143,38 +155,50 @@
 
         let monthFails = 0;
         let monthVictory = 0;
+        let totalRelapses = 0;
         const cal = document.getElementById('calendar');
 
         for(let i=1; i<=daysInMonth; i++) {
             const d = new Date(currentYear, currentMonth, i);
             const dateStr = d.toDateString();
+            const data = history[dateStr];
+            
             const box = document.createElement('div');
-            box.className = 'day-box ' + (history[dateStr] || '');
+            box.className = 'day-box';
+            if(data) {
+                box.classList.add(data.status);
+                if(data.status === 'failed') {
+                    monthFails++;
+                    totalRelapses += data.count;
+                    box.setAttribute('data-count', data.count);
+                } else {
+                    monthVictory++;
+                }
+            }
             box.innerText = i;
             cal.appendChild(box);
-
-            if(history[dateStr] === 'failed') monthFails++;
-            if(history[dateStr] === 'clean') monthVictory++;
         }
 
         document.getElementById('streak-display').innerText = localStorage.getItem('warrior_streak_v3') || 0;
         document.getElementById('fail-status').innerText = `Failures this month: ${monthFails}/4`;
 
-        // THE HARSH RULE: 5th failure triggers Shame Mode
         if(monthFails > 4) {
             document.getElementById('main-content').style.display = 'none';
             document.getElementById('shame-mode').style.display = 'flex';
         }
 
-        // Monthly Wrapped Logic (Shows from 28th)
-        if(today.getDate() >= 28) {
+        // Monthly Report (Visible from 25th)
+        if(today.getDate() >= 25) {
             const report = document.getElementById('wrapped-report');
             report.style.display = 'block';
-            document.getElementById('final-stats').innerText = `${monthVictory} Victory | ${monthFails} Defeat`;
             document.getElementById('month-name').innerText = today.toLocaleString('default', { month: 'long' }).toUpperCase();
+            document.getElementById('final-stats').innerHTML = 
+                `<span style="color:green">${monthVictory} Days Clean</span> | ` +
+                `<span style="color:red">${monthFails} Days Failed</span><br>` +
+                `<small>Total Relapses: ${totalRelapses}</small>`;
             
-            const warriorRank = monthFails === 0 ? "UNSTOPPABLE KING 👑" : monthFails <= 2 ? "ELITE WARRIOR ⚔️" : "SURVIVOR 🛡️";
-            document.getElementById('rank').innerText = "RANK: " + warriorRank;
+            const rank = monthFails === 0 ? "GOD SPEED 👑" : monthFails <= 2 ? "WARRIOR ⚔️" : "FAILED SLAVE ⛓️";
+            document.getElementById('rank').innerText = "RANK: " + rank;
         }
     }
 
