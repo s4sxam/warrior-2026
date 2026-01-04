@@ -1,24 +1,17 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Discipline 2026 | Warrior Mode v4</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Warrior 2026 | Professional Discipline</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { --warrior-red: #ff3131; --bg-black: #050505; --glass: rgba(255, 255, 255, 0.05); }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-black); color: white; margin: 0; padding: 20px; text-align: center; -webkit-tap-highlight-color: transparent; }
         
-        /* Shame Mode UI */
-        #shame-mode { 
-            display: none; background: #ff0000; color: black; position: fixed; 
-            top:0; left:0; width:100%; height:100%; z-index: 9999; 
-            justify-content: center; align-items: center; flex-direction: column; 
-            padding: 25px; box-sizing: border-box; text-align: center;
-        }
-
-        /* Modal Pop-up Style */
+        /* Modal Pop-up */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center;
@@ -33,31 +26,33 @@
         }
 
         .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
-        .title { font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #ff3131, #8b0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        .title { font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #ff3131, #8b0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; margin: 10px 0; }
 
-        .streak-num { font-size: 50px; font-weight: 900; color: var(--warrior-red); text-shadow: 0 0 20px rgba(255, 49, 49, 0.5); margin: 10px 0; }
+        .streak-num { font-size: 55px; font-weight: 900; color: var(--warrior-red); text-shadow: 0 0 20px rgba(255, 49, 49, 0.5); margin: 5px 0; }
         .label { font-size: 10px; color: #666; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; }
 
-        .panic-btn { background: var(--warrior-red); color: white; width: 100%; padding: 16px; border-radius: 50px; font-weight: 900; margin-bottom: 20px; border: none; cursor: pointer; }
+        .panic-btn { background: var(--warrior-red); color: white; width: 100%; padding: 16px; border-radius: 50px; font-weight: 900; margin-bottom: 20px; border: none; box-shadow: 0 5px 15px rgba(255,49,49,0.4); cursor: pointer; }
         
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .action-btn { border: none; padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 13px; }
+        .action-btn { border: none; padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; transition: 0.3s; font-size: 13px; text-transform: uppercase; }
         .victory { background: #1DB954; color: black; }
         .relapse { background: #222; color: #ff3131; border: 1px solid #ff3131; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 15px; }
-        .day-box { height: 35px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #444; }
-        .day-box.clean { background: #1DB954; color: black; box-shadow: 0 0 10px #1db954; }
-        .day-box.failed { background: var(--warrior-red); color: white; box-shadow: 0 0 10px #ff3131; position: relative; }
-        .day-box.failed::after { content: attr(data-count); position: absolute; top: -5px; right: -5px; background: white; color: black; font-size: 8px; padding: 2px 5px; border-radius: 50%; }
+        .day-box { height: 35px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #444; position: relative; }
+        .day-box.clean { background: #1DB954 !important; color: black !important; box-shadow: 0 0 10px #1db954; border: none; }
+        .day-box.failed { background: var(--warrior-red) !important; color: white !important; box-shadow: 0 0 10px #ff3131; border: none; }
+        .day-box.failed::after { content: attr(data-count); position: absolute; top: -5px; right: -5px; background: white; color: black; font-size: 8px; padding: 2px 5px; border-radius: 50%; font-weight: 900; }
 
-        #wrapped-report { display: none; background: white; color: black; padding: 25px; border-radius: 25px; margin-top: 20px; }
+        #wrapped-report { display: none; background: white; color: black; padding: 25px; border-radius: 25px; margin-top: 20px; text-align: center; }
         .footer { text-align: center; font-size: 11px; color: #ffffff; letter-spacing: 6px; margin-top: 50px; font-weight: 900; text-transform: uppercase; }
+        
+        #shame-mode { display: none; background: #ff0000; color: black; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 9999; justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-<!-- FAIL MODAL -->
+<!-- FAIL POPUP -->
 <div id="failModal" class="modal">
     <div class="modal-content">
         <h2 style="color: var(--warrior-red); margin:0;">DISCIPLINE BROKEN</h2>
@@ -67,10 +62,11 @@
     </div>
 </div>
 
+<!-- SHAME MODE -->
 <div id="shame-mode">
-    <h1>MISSION FAILED</h1>
-    <p>"You will never be a man. Go back and be a failure."</p>
-    <button onclick="location.reload()" style="margin-top:30px; padding:12px 25px; background:black; color:white; border:none; border-radius:12px; font-weight:bold;">REDEEM YOURSELF</button>
+    <h1 style="font-size: 45px; font-weight: 900;">MISSION FAILED</h1>
+    <p style="font-size: 22px; font-weight: 800;">"You will never be a man. GO to hell."</p>
+    <button onclick="location.reload()" style="margin-top:30px; padding:12px 25px; background:black; color:white; border:none; border-radius:12px; font-weight:bold;">TRY TO REDEEM YOURSELF</button>
 </div>
 
 <div id="main-content">
@@ -85,11 +81,11 @@
         <div class="label">Days Finished</div>
     </div>
 
-    <button class="panic-btn" onclick="emergency()"><i class="fas fa-skull"></i> PANIC BUTTON </button>
+    <button class="panic-btn" onclick="emergency()"><i class="fas fa-skull"></i> PANIC BUTTON: I want to relapse</button>
 
     <div class="btn-group">
-        <button class="action-btn victory" onclick="logProgress(true)">I STAY CLEAN</button>
-        <button class="action-btn relapse" onclick="logProgress(false)">I FAILED</button>
+        <button class="action-btn victory" onclick="logProgress(true)">I Stay Clean</button>
+        <button class="action-btn relapse" onclick="logProgress(false)">I Failed</button>
     </div>
 
     <div class="glass-card">
@@ -99,7 +95,7 @@
     </div>
 
     <div id="wrapped-report">
-        <h3 style="margin:0; font-size: 14px; color: #888;">MONTHLY PERFORMANCE</h3>
+        <h3 style="margin:0; font-size: 12px; color: #888;">MONTHLY PERFORMANCE</h3>
         <h1 id="month-name" style="margin: 5px 0;">JANUARY</h1>
         <div style="font-size: 18px; font-weight: 900;" id="final-stats"></div>
         <p id="rank" style="color: var(--warrior-red); font-weight: 900; margin-top: 10px;"></p>
@@ -110,22 +106,24 @@
 
 <script>
     function emergency() {
-        const tips = ["DO 50 PUSHUPS!", "ICE COLD WATER ON FACE!", "LEAVE THE ROOM!", "THINK OF YOUR GOALS!"];
-        alert("🔥 WARRIOR: " + tips[Math.floor(Math.random()*tips.length)]);
+        const tips = ["DO 50 PUSHUPS!", "ICE COLD WATER!", "LEAVE THE ROOM!", "DON'T BE A LOSER!"];
+        alert("🔥 WARRIOR MODE: " + tips[Math.floor(Math.random()*tips.length)]);
     }
 
     function logProgress(isClean) {
         const today = new Date().toDateString();
-        let history = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
+        // Check both versions to avoid duplicate entries
+        let h3 = JSON.parse(localStorage.getItem('warrior_history_v3') || "{}");
+        let h4 = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
         
-        if(history[today]) {
-            alert("Today's record already exists!");
+        if(h3[today] || h4[today]) {
+            alert("Today's battle is already recorded!");
             return;
         }
 
         if(isClean) {
-            history[today] = { status: 'clean', count: 0 };
-            localStorage.setItem('warrior_history_v4', JSON.stringify(history));
+            h4[today] = { status: 'clean', count: 0 };
+            localStorage.setItem('warrior_history_v4', JSON.stringify(h4));
             let s = parseInt(localStorage.getItem('warrior_streak_v3') || 0) + 1;
             localStorage.setItem('warrior_streak_v3', s);
             confetti({ particleCount: 200, spread: 80, colors: ['#ff3131', '#ffffff'] });
@@ -138,20 +136,18 @@
     function submitFailure() {
         const count = document.getElementById('relapseCount').value || 1;
         const today = new Date().toDateString();
-        let history = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
-        
-        history[today] = { status: 'failed', count: parseInt(count) };
-        localStorage.setItem('warrior_history_v4', JSON.stringify(history));
+        let h4 = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
+        h4[today] = { status: 'failed', count: parseInt(count) };
+        localStorage.setItem('warrior_history_v4', JSON.stringify(h4));
         localStorage.setItem('warrior_streak_v3', 0);
         location.reload();
     }
 
     function render() {
-        const history = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
+        const h3 = JSON.parse(localStorage.getItem('warrior_history_v3') || "{}");
+        const h4 = JSON.parse(localStorage.getItem('warrior_history_v4') || "{}");
         const today = new Date();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
-        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
         let monthFails = 0;
         let monthVictory = 0;
@@ -159,23 +155,26 @@
         const cal = document.getElementById('calendar');
 
         for(let i=1; i<=daysInMonth; i++) {
-            const d = new Date(currentYear, currentMonth, i);
-            const dateStr = d.toDateString();
-            const data = history[dateStr];
+            const dateObj = new Date(today.getFullYear(), today.getMonth(), i);
+            const dateStr = dateObj.toDateString();
             
             const box = document.createElement('div');
             box.className = 'day-box';
+            box.innerText = i;
+
+            // Logik: Check both h3 and h4
+            let data = h4[dateStr] || (h3[dateStr] ? { status: h3[dateStr], count: 0 } : null);
+
             if(data) {
                 box.classList.add(data.status);
                 if(data.status === 'failed') {
                     monthFails++;
-                    totalRelapses += data.count;
-                    box.setAttribute('data-count', data.count);
+                    totalRelapses += (data.count || 0);
+                    if(data.count > 0) box.setAttribute('data-count', data.count);
                 } else {
                     monthVictory++;
                 }
             }
-            box.innerText = i;
             cal.appendChild(box);
         }
 
@@ -187,17 +186,14 @@
             document.getElementById('shame-mode').style.display = 'flex';
         }
 
-        // Monthly Report (Visible from 25th)
+        // Monthly Wrapped Logic
         if(today.getDate() >= 25) {
-            const report = document.getElementById('wrapped-report');
-            report.style.display = 'block';
+            document.getElementById('wrapped-report').style.display = 'block';
             document.getElementById('month-name').innerText = today.toLocaleString('default', { month: 'long' }).toUpperCase();
             document.getElementById('final-stats').innerHTML = 
-                `<span style="color:green">${monthVictory} Days Clean</span> | ` +
-                `<span style="color:red">${monthFails} Days Failed</span><br>` +
-                `<small>Total Relapses: ${totalRelapses}</small>`;
-            
-            const rank = monthFails === 0 ? "GOD SPEED 👑" : monthFails <= 2 ? "WARRIOR ⚔️" : "FAILED SLAVE ⛓️";
+                `<span style="color:green">${monthVictory} Victory</span> | <span style="color:red">${monthFails} Defeat</span><br>` +
+                `<small style="color:gray">Total Relapses: ${totalRelapses}</small>`;
+            const rank = monthFails === 0 ? "UNSTOPPABLE KING 👑" : monthFails <= 2 ? "WARRIOR ⚔️" : "SURVIVOR 🛡️";
             document.getElementById('rank').innerText = "RANK: " + rank;
         }
     }
