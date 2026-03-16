@@ -1,5 +1,6 @@
 import React from 'react';
-import { WarriorState } from '../types';
+
+
 
 export default function Archive({ data }: { data: WarriorState }) {
   let tV = 0, tD = 0;
