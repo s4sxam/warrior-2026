@@ -1,10 +1,13 @@
-import React from 'react';
-
-
+import { WarriorState } from '../types';
 
 export default function Archive({ data }: { data: WarriorState }) {
   let tV = 0, tD = 0;
-  Object.values(data.history).forEach(x => { if(x.status === 'clean') tV++; else tD++; });
+  
+  // Added ": any" here to fix the Vercel strict mode error
+  Object.values(data.history).forEach((x: any) => { 
+      if(x.status === 'clean') tV++; else tD++; 
+  });
+  
   const winRate = tV + tD > 0 ? Math.round((tV / (tV + tD)) * 100) : 0;
 
   const renderMonths = () => {
